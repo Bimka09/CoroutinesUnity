@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Game/Scenes/Menu.unity
+    guid: 4ab5605fc74e7334a889f762b2d46468
+  - enabled: 1
+    path: Assets/Game/Scenes/GameHooligan.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Game/Scenes/GamePolice.unity
+    guid: b4d6b88823a0e5649a1106e4aea499f6
   m_configObjects: {}
