@@ -12,9 +12,9 @@ namespace Game.Scripts.Characters
         private int _maximumHealth;
 
         [SerializeField]
-        public int currentHealth { get; private set; } = 10;
+        private int _currentHealth;
 
-        public bool IsAlive => currentHealth > 0;
+        public bool IsAlive => _currentHealth > 0;
 
         // TODO Type of damage
         public void TakeDamage(int damage)
@@ -22,9 +22,9 @@ namespace Game.Scripts.Characters
             if (!IsAlive)
                 return;
 
-            currentHealth -= damage;
+            _currentHealth -= damage;
 
-            if (currentHealth <= 0)
+            if (_currentHealth <= 0)
             {
                 Die();
             }
@@ -32,7 +32,7 @@ namespace Game.Scripts.Characters
 
         public void Heal()
         {
-            currentHealth = _maximumHealth;
+            _currentHealth = _maximumHealth;
         }
 
         private void Die()

@@ -39,17 +39,11 @@ public class GameController : MonoBehaviour
 
     private Character _selectedTarget;
     private bool _isTargetSelectionConfirmed;
-
-    [SerializeField]
-    private CanvasGroup _winDisplay;
-    [SerializeField]
-    private CanvasGroup _loseDisplay;
+    [SerializeField] private PlaySound _soundEffect;
 
 
     private void Start()
     {
-        Utility.SetCanvasGroupEnabled(_winDisplay, false);
-        Utility.SetCanvasGroupEnabled(_loseDisplay, false);
         foreach (var character in _playerCharacters)
         {
             _turns.Enqueue(character);
@@ -59,7 +53,7 @@ public class GameController : MonoBehaviour
         {
             _turns.Enqueue(character);
         }
-
+        if (_soundEffect) _soundEffect.PlaySoundEffect("BattleTheme");
         StartCoroutine(LevelLoop());
     }
 
@@ -74,6 +68,16 @@ public class GameController : MonoBehaviour
         {
             _isTargetSelectionConfirmed = true;
         }
+    }
+
+    public void AttackButton()
+    {
+        _isTargetSelectionConfirmed = true;
+    }
+
+    public void SwitchButton()
+    {
+        SelectRandomTarget(_enemyCharacters);
     }
 
     private IEnumerator LevelLoop()
@@ -189,13 +193,13 @@ public class GameController : MonoBehaviour
 
     private void GameWon()
     {
-        Utility.SetCanvasGroupEnabled(_winDisplay, true);
+        if (_soundEffect) _soundEffect.PlaySoundEffect("WinTheme");
         Debug.Log("GameController.GameWon: ");
     }
 
     private void GameLost()
     {
-        Utility.SetCanvasGroupEnabled(_winDisplay, false);
+        if (_soundEffect) _soundEffect.PlaySoundEffect("LoseTheme");
         Debug.Log("GameController.GameLost: ");
     }
 }

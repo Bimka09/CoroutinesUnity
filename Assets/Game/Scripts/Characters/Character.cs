@@ -1,6 +1,5 @@
 using System.Collections;
 using Game.Scripts.Helpers;
-using TMPro;
 using UnityEngine;
 
 namespace Game.Scripts.Characters
@@ -21,21 +20,18 @@ namespace Game.Scripts.Characters
 
         [SerializeField]
         private Transform _meleeAttackerAnchor;
-        [SerializeField]
-        private TMP_Text _healthPointsBanner;
 
         public Transform MeleeAttackerAnchor => _meleeAttackerAnchor;
 
         public bool IsAlive => _health.IsAlive;
 
+        [SerializeField] private Animation _attackEffect;
+        [SerializeField] private GameObject _damageEffect;
+        [SerializeField] private PlaySound _soundEffect;
 
         private void Start()
         {
             _health.OnDeath += OnDeath;
-        }
-        private void Update()
-        {
-            _healthPointsBanner.text = _health.currentHealth.ToString();
         }
 
         private void OnDestroy()
@@ -46,12 +42,16 @@ namespace Game.Scripts.Characters
         private void OnDeath()
         {
             Debug.Log("Character.OnDeath: ");
-
+            if (_soundEffect) _soundEffect.PlaySoundEffect("DieSound");
             _animator.SetTrigger("IsDead");
         }
 
         public IEnumerator Attack(Character attackedCharacter)
         {
+            if (_attackEffect) _attackEffect.Play();
+            //if(_weapon.Type != WeaponType.BaseballBat)
+            
+            
             Vector3 originalPosition = transform.position;
 
             if (_weapon.Type == WeaponType.BaseballBat)
@@ -73,6 +73,7 @@ namespace Game.Scripts.Characters
 
             var weaponAnimationName = WeaponHelpers.GetAnimationNameFor(_weapon.Type);
             _animator.SetTrigger(weaponAnimationName);
+            if (_soundEffect) _soundEffect.PlaySoundEffect("AttackSound");
 
             yield return null;
 
@@ -99,6 +100,7 @@ namespace Game.Scripts.Characters
                 {
                     distance = Vector3.Distance(transform.position, originalPosition);
                     transform.position = Vector3.MoveTowards(transform.position, originalPosition, step);
+                    _soundEffect.PlaySoundEffect("FootSteps");
                     yield return null;
                 } while (distance > CharacterHelper.MeleeAttackDistanceThreshold);
 
@@ -113,6 +115,15 @@ namespace Game.Scripts.Characters
 
         public void TakeDamage(int damage)
         {
+            if (_damageEffect)
+            {
+                foreach (var effect in _damageEffect.GetComponentsInChildren<ParticleSystem>())
+                {
+                    effect.Play();
+                }
+            }
+            if (_soundEffect) _soundEffect.PlaySoundEffect("TakeDamage");
+            
             _health.TakeDamage(damage);
         }
     }
